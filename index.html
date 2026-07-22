@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>长沙city</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+            background-color: #f5f0e8;
+            color: #3a3a3a;
+            line-height: 1.8;
+        }
+
+        .page-header {
+            text-align: center;
+            padding: 60px 20px 40px;
+            background: linear-gradient(135deg, #d4451a 0%, #e8734a 100%);
+            color: #fff;
+        }
+
+        .page-header h1 {
+            font-size: 2.4rem;
+            letter-spacing: 0.15em;
+            margin-bottom: 12px;
+            text-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        }
+
+        .page-header p {
+            font-size: 1rem;
+            opacity: 0.9;
+            letter-spacing: 0.08em;
+        }
+
+        .memoir-container {
+            max-width: 720px;
+            margin: 0 auto;
+            padding: 30px 16px 60px;
+        }
+
+        .location-card {
+            background: #fff;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            margin-bottom: 36px;
+            overflow: hidden;
+            transition: transform 0.25s ease, box-shadow 0.25s ease;
+        }
+
+        .location-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 30px rgba(0,0,0,0.12);
+        }
+
+        .location-title {
+            padding: 24px 28px 16px;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #d4451a;
+            border-bottom: 2px solid #f5f0e8;
+            letter-spacing: 0.06em;
+        }
+
+        .location-desc {
+            padding: 16px 28px 20px;
+            font-size: 0.95rem;
+            color: #666;
+        }
+
+        .carousel {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 16 / 9;
+            overflow: hidden;
+            background: #e8e0d4;
+        }
+
+        .carousel-track {
+            display: flex;
+            height: 100%;
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .carousel-slide {
+            min-width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            cursor: pointer;
+        }
+
+        .carousel-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 40px;
+            height: 40px;
+            border: none;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.85);
+            color: #d4451a;
+            font-size: 1.2rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+            transition: background 0.2s, transform 0.2s;
+            z-index: 10;
+        }
+
+        .carousel-btn:hover {
+            background: #fff;
+            transform: translateY(-50%) scale(1.1);
+        }
+
+        .carousel-btn:active {
+            transform: translateY(-50%) scale(0.95);
+        }
+
+        .carousel-btn.prev { left: 12px; }
+        .carousel-btn.next { right: 12px; }
+
+        .carousel-dots {
+            position: absolute;
+            bottom: 14px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 8px;
+            z-index: 10;
+        }
+
+        .carousel-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.5);
+            border: none;
+            cursor: pointer;
+            transition: background 0.3s, transform 0.3s;
+        }
+
+        .carousel-dot.active {
+            background: #fff;
+            transform: scale(1.3);
+        }
+
+        /* 大图预览弹窗 */
+        .img-preview {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.92);
+            z-index: 9999;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .img-preview.show { display: flex; }
+        .img-preview img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
+        .img-preview .close {
+            position: absolute;
+            top: 20px;
+            right: 24px;
+            color: white;
+            font-size: 32px;
+            cursor: pointer;
+        }
+
+        /* ========== 页脚 ========== */
+        .page-footer {
+            text-align: center;
+            padding: 30px 20px;
+            color: #999;
+            font-size: 0.85rem;
+            letter-spacing: 0.05em;
+        }
+
+        @media (max-width: 480px) {
+            .page-header h1 { font-size: 1.8rem; }
+            .location-title { font-size: 1.25rem; padding: 20px 20px 14px; }
+            .location-desc { padding: 14px 20px 18px; }
+            .carousel-btn { width: 34px; height: 34px; font-size: 1rem; }
+        }
+    </style>
+</head>
+<body>
+    <header class="page-header">
+        <h1>长沙</h1>
+        <p>一座城，一段时光，一些值得珍藏的画面</p>
+    </header>
+    <main class="memoir-container">
+
+        <section class="location-card">
+            <h2 class="location-title">橘子洲头</h2>
+            <p class="location-desc">湘江北去，橘子洲头。傍晚的江风拂过脸颊，青年毛泽东雕像在夕阳下格外庄严。记得那天我们沿着洲尾走到洲头，拍下了许多难忘的照片。</p>
+            <div class="carousel" data-carousel>
+                <div class="carousel-track">
+                    <img class="carousel-slide" loading="lazy" src="juzizhou/juzizhou1.jpg" alt="橘子洲头风景1" onerror="this.src='https://picsum.photos/id/1036/800/450'">
+                    <img class="carousel-slide" loading="lazy" src="juzizhou/juzizhou2.jpg" alt="橘子洲头风景2" onerror="this.src='https://picsum.photos/id/1036/800/450'">
+                    <img class="carousel-slide" loading="lazy" src="juzizhou/juzizhou3.jpg" alt="橘子洲头风景3" onerror="this.src='https://picsum.photos/id/1036/800/450'">
+                    <img class="carousel-slide" loading="lazy" src="juzizhou/juzizhou4.jpg" alt="橘子洲头风景4" onerror="this.src='https://picsum.photos/id/1036/800/450'">
+                    <img class="carousel-slide" loading="lazy" src="juzizhou/juzizhou5.jpg" alt="橘子洲头风景5" onerror="this.src='https://picsum.photos/id/1036/800/450'">
+                    <img class="carousel-slide" loading="lazy" src="juzizhou/juzizhou6.jpg" alt="橘子洲头风景6" onerror="this.src='https://picsum.photos/id/1036/800/450'">
+                    <img class="carousel-slide" loading="lazy" src="juzizhou/juzizhou7.jpg" alt="橘子洲头风景7" onerror="this.src='https://picsum.photos/id/1036/800/450'">
+                    <img class="carousel-slide" loading="lazy" src="juzizhou/juzizhou8.jpg" alt="橘子洲头风景8" onerror="this.src='https://picsum.photos/id/1036/800/450'">
+                </div>
+                <button class="carousel-btn prev" aria-label="上一张">❮</button>
+                <button class="carousel-btn next" aria-label="下一张">❯</button>
+                <div class="carousel-dots"></div>
+            </div>
+        </section>
+
+        <section class="location-card">
+            <h2 class="location-title">五一广场</h2>
+            <p class="location-desc">长沙的城市心脏，人流不息的繁华中心。白天车水马龙，夜幕降临霓虹齐放，汇聚着潮牌商圈、地道小吃与来来往往奔赴热爱的旅人，处处涌动鲜活的城市气息。</p>
+            <div class="carousel" data-carousel>
+                <div class="carousel-track">
+                    <img class="carousel-slide" loading="lazy" src="wuyiguangchang/wuyiguangchang1.jpg" alt="五一广场1" onerror="this.src='https://picsum.photos/id/1036/800/450'">
+                    <img class="carousel-slide" loading="lazy" src="wuyiguangchang/wuyiguangchang2.jpg" alt="五一广场2" onerror="this.src='https://picsum.photos/id/1036/800/450'">
+                    <img class="carousel-slide" loading="lazy" src="wuyiguangchang/wuyiguangchang3.jpg" alt="五一广场3" onerror="this.src='https://picsum.photos/id/1036/800/450'">
+                    <img class="carousel-slide" loading="lazy" src="wuyiguangchang/wuyiguangchang4.jpg" alt="五一广场4" onerror="this.src='https://picsum.photos/id/1036/800/450'">
+                    <img class="carousel-slide" loading="lazy" src="wuyiguangchang/wuyiguangchang5.jpg" alt="五一广场5" onerror="this.src='https://picsum.photos/id/1036/800/450'">
+                    <img class="carousel-slide" loading="lazy" src="wuyiguangchang/wuyiguangchang6.jpg" alt="五一广场6" onerror="this.src='https://picsum.photos/id/1036/800/450'">
+                    <img class="carousel-slide" loading="lazy" src="wuyiguangchang/wuyiguangchang7.jpg" alt="五一广场7" onerror="this.src='https://picsum.photos/id/1036/800/450'">
+                    <img class="carousel-slide" loading="lazy" src="wuyiguangchang/wuyiguangchang8.jpg" alt="五一广场8" onerror="this.src='https://picsum.photos/id/1036/800/450'">
+                </div>
+                <button class="carousel-btn prev" aria-label="上一张">❮</button>
+                <button class="carousel-btn next" aria-label="下一张">❯</button>
+                <div class="carousel-dots"></div>
+            </div>
+        </section>
+       
+
+        <section class="location-card">
+            <h2 class="location-title">坡子街</h2>
+            <p class="location-desc">古巷悠长，青砖黛瓦。老长沙的韵味藏在街巷深处，特色小店、传统小吃沿街排布，慢悠悠漫步其间，感受长沙老城独有的闲适烟火。</p>
+            <div class="carousel" data-carousel>
+                <div class="carousel-track">
+                    <img class="carousel-slide" loading="lazy" src="pozijie/pozijie1.jpg" alt="坡子街1" onerror="this.src='https://picsum.photos/id/1036/800/450'">
+                    <img class="carousel-slide" loading="lazy" src="pozijie/pozijie2.jpg" alt="坡子街2" onerror="this.src='https://picsum.photos/id/1036/800/450'">
+                    <img class="carousel-slide" loading="lazy" src="pozijie/pozijie3.jpg" alt="坡子街3" onerror="this.src='https://picsum.photos/id/1036/800/450'">
+                    <img class="carousel-slide" loading="lazy" src="pozijie/pozijie4.jpg" alt="坡子街4" onerror="this.src='https://picsum.photos/id/1036/800/450'">
+                    <img class="carousel-slide" loading="lazy" src="pozijie/pozijie5.jpg" alt="坡子街5" onerror="this.src='https://picsum.photos/id/1036/800/450'">
+                    <img class="carousel-slide" loading="lazy" src="pozijie/pozijie6.jpg" alt="坡子街6" onerror="this.src='https://picsum.photos/id/1036/800/450'">
+                    <img class="carousel-slide" loading="lazy" src="pozijie/pozijie7.jpg" alt="坡子街7" onerror="this.src='https://picsum.photos/id/1036/800/450'">
+                    <img class="carousel-slide" loading="lazy" src="pozijie/pozijie8.jpg" alt="坡子街8" onerror="this.src='https://picsum.photos/id/1036/800/450'">
+                </div>
+                <button class="carousel-btn prev" aria-label="上一张">❮</button>
+                <button class="carousel-btn next" aria-label="下一张">❯</button>
+                <div class="carousel-dots"></div>
+            </div>
+        </section>
+
+        <section class="location-card">
+            <h2 class="location-title">岳麓书院</h2>
+            <p class="location-desc">惟楚有材，于斯为盛。千年学府的静谧与厚重，让人不由自主地放慢脚步。红墙黛瓦间，仿佛能听见历史的回响。</p>
+            <div class="carousel" data-carousel>
+                <div class="carousel-track">
+                    <img class="carousel-slide" loading="lazy" src="yuelushuyuan/yuelushuyuan1.jpg" alt="岳麓书院1" onerror="this.src='https://picsum.photos/id/1036/800/450'">
+                    <img class="carousel-slide" loading="lazy" src="yuelushuyuan/yuelushuyuan2.jpg" alt="岳麓书院2" onerror="this.src='https://picsum.photos/id/1036/800/450'">
+                    <img class="carousel-slide" loading="lazy" src="yuelushuyuan/yuelushuyuan3.jpg" alt="岳麓书院3" onerror="this.src='https://picsum.photos/id/1036/800/450'">
+                    <img class="carousel-slide" loading="lazy" src="yuelushuyuan/yuelushuyuan4.jpg" alt="岳麓书院4" onerror="this.src='https://picsum.photos/id/1036/800/450'">
+                    <img class="carousel-slide" loading="lazy" src="yuelushuyuan/yuelushuyuan5.jpg" alt="岳麓书院5" onerror="this.src='https://picsum.photos/id/1036/800/450'">
+                    <img class="carousel-slide" loading="lazy" src="yuelushuyuan/yuelushuyuan6.jpg" alt="岳麓书院6" onerror="this.src='https://picsum.photos/id/1036/800/450'">
+                    <img class="carousel-slide" loading="lazy" src="yuelushuyuan/yuelushuyuan7.jpg" alt="岳麓书院7" onerror="this.src='https://picsum.photos/id/1036/800/450'">
+                    <img class="carousel-slide" loading="lazy" src="yuelushuyuan/yuelushuyuan8.jpg" alt="岳麓书院8" onerror="this.src='https://picsum.photos/id/1036/800/450'">
+                    <img class="carousel-slide" loading="lazy" src="yuelushuyuan/yuelushuyuan9.jpg" alt="岳麓书院9" onerror="this.src='https://picsum.photos/id/1036/800/450'">
+                    <img class="carousel-slide" loading="lazy" src="yuelushuyuan/yuelushuyuan10.jpg" alt="岳麓书院10" onerror="this.src='https://picsum.photos/id/1036/800/450'">
+                    <img class="carousel-slide" loading="lazy" src="yuelushuyuan/yuelushuyuan11.jpg" alt="岳麓书院11" onerror="this.src='https://picsum.photos/id/1036/800/450'">
+                    <img class="carousel-slide" loading="lazy" src="yuelushuyuan/yuelushuyuan12.jpg" alt="岳麓书院12" onerror="this.src='https://picsum.photos/id/1036/800/450'">
+                </div>
+                <button class="carousel-btn prev" aria-label="上一张">❮</button>
+                <button class="carousel-btn next" aria-label="下一张">❯</button>
+                <div class="carousel-dots"></div>
+            </div>
+        </section>
+
+        <section class="location-card">
+            <h2 class="location-title">烈士公园</h2>
+            <p class="location-desc">
+                长沙人的后花园，承载着几代人的记忆。春天的郁金香花海，夏日的迎丰湖泛舟，
+                还有那座庄严肃穆的纪念塔。在这里，既能感受历史的厚重，也能享受市井的悠闲。
+            </p>
+            <div class="carousel" data-carousel>
+                <div class="carousel-track">
+                    <img class="carousel-slide" loading="lazy" src="lieshigongyuan/lieshigongyuan1.jpg" alt="烈士公园1" onerror="this.src='https://picsum.photos/id/1036/800/450'">
+                    <img class="carousel-slide" loading="lazy" src="lieshigongyuan/lieshigongyuan2.jpg" alt="烈士公园2" onerror="this.src='https://picsum.photos/id/1036/800/450'">
+                    <img class="carousel-slide" loading="lazy" src="lieshigongyuan/lieshigongyuan3.jpg" alt="烈士公园3" onerror="this.src='https://picsum.photos/id/1036/800/450'">
+                    <img class="carousel-slide" loading="lazy" src="lieshigongyuan/lieshigongyuan4.jpg" alt="烈士公园4" onerror="this.src='https://picsum.photos/id/1036/800/450'">
+                    <img class="carousel-slide" loading="lazy" src="lieshigongyuan/lieshigongyuan5.jpg" alt="烈士公园5" onerror="this.src='https://picsum.photos/id/1036/800/450'">
+                    <img class="carousel-slide" loading="lazy" src="lieshigongyuan/lieshigongyuan6.jpg" alt="烈士公园6" onerror="this.src='https://picsum.photos/id/1036/800/450'">
+                    <img class="carousel-slide" loading="lazy" src="lieshigongyuan/lieshigongyuan7.jpg" alt="烈士公园7" onerror="this.src='https://picsum.photos/id/1036/800/450'">
+                    <img class="carousel-slide" loading="lazy" src="lieshigongyuan/lieshigongyuan8.jpg" alt="烈士公园8" onerror="this.src='https://picsum.photos/id/1036/800/450'">
+                    <img class="carousel-slide" loading="lazy" src="lieshigongyuan/lieshigongyuan9.jpg" alt="烈士公园9" onerror="this.src='https://picsum.photos/id/1036/800/450'">
+                    <img class="carousel-slide" loading="lazy" src="lieshigongyuan/lieshigongyuan10.jpg" alt="烈士公园10" onerror="this.src='https://picsum.photos/id/1036/800/450'">
+                </div>
+                <button class="carousel-btn prev" aria-label="上一张">❮</button>
+                <button class="carousel-btn next" aria-label="下一张">❯</button>
+                <div class="carousel-dots"></div>
+            </div>
+        </section>
+
+        <section class="location-card">
+            <h2 class="location-title">杜甫江阁</h2>
+            <p class="location-desc">
+                临江而立，飞檐翘角。夜幕降临时，杜甫江阁灯火璀璨，倒映在湘江之中，宛如仙境。
+                登阁远眺，橘子洲的轮廓与城市的霓虹交相辉映，是长沙夜景的绝佳观赏地。
+            </p>
+            <div class="carousel" data-carousel>
+                <div class="carousel-track">
+                     <img class="carousel-slide" loading="lazy" src="dufujiangge/dufujiangge1.jpg" alt="杜甫江阁1" onerror="this.src='https://picsum.photos/id/1036/800/450'">
+                     <img class="carousel-slide" loading="lazy" src="dufujiangge/dufujiangge2.jpg" alt="杜甫江阁2" onerror="this.src='https://picsum.photos/id/1036/800/450'">
+                     <img class="carousel-slide" loading="lazy" src="dufujiangge/dufujiangge3.jpg" alt="杜甫江阁3" onerror="this.src='https://picsum.photos/id/1036/800/450'">
+                     <img class="carousel-slide" loading="lazy" src="dufujiangge/dufujiangge4.jpg" alt="杜甫江阁4" onerror="this.src='https://picsum.photos/id/1036/800/450'">
+                     <img class="carousel-slide" loading="lazy" src="dufujiangge/dufujiangge5.jpg" alt="杜甫江阁5" onerror="this.src='https://picsum.photos/id/1036/800/450'">
+                     <img class="carousel-slide" loading="lazy" src="dufujiangge/dufujiangge6.jpg" alt="杜甫江阁6" onerror="this.src='https://picsum.photos/id/1036/800/450'">
+                     <img class="carousel-slide" loading="lazy" src="dufujiangge/dufujiangge7.jpg" alt="杜甫江阁7" onerror="this.src='https://picsum.photos/id/1036/800/450'">
+                </div>
+                <button class="carousel-btn prev" aria-label="上一张">❮</button>
+                <button class="carousel-btn next" aria-label="下一张">❯</button>
+                <div class="carousel-dots"></div>
+            </div>
+        </section>
+
+        <section class="location-card">
+            <h2 class="location-title">古开福寺</h2>
+            <p class="location-desc">
+                紫微山麓，湘水之滨。千年古刹钟声悠扬，香火鼎盛。
+                漫步在红墙黄瓦之间，闻着淡淡的檀香，城市的喧嚣仿佛瞬间远去，只留下一片内心的宁静。
+            </p>
+            <div class="carousel" data-carousel>
+                <div class="carousel-track">
+                    <img class="carousel-slide" loading="lazy" src="kaifusi/kaifusi1.jpg" alt="开福寺1" onerror="this.src='https://picsum.photos/id/1036/800/450'">
+                    <img class="carousel-slide" loading="lazy" src="kaifusi/kaifusi2.jpg" alt="开福寺2" onerror="this.src='https://picsum.photos/id/1036/800/450'">
+                    <img class="carousel-slide" loading="lazy" src="kaifusi/kaifusi3.jpg" alt="开福寺3" onerror="this.src='https://picsum.photos/id/1036/800/450'">
+                    <img class="carousel-slide" loading="lazy" src="kaifusi/kaifusi4.jpg" alt="开福寺4" onerror="this.src='https://picsum.photos/id/1036/800/450'">
+                    <img class="carousel-slide" loading="lazy" src="kaifusi/kaifusi5.jpg" alt="开福寺5" onerror="this.src='https://picsum.photos/id/1036/800/450'">
+                    <img class="carousel-slide" loading="lazy" src="kaifusi/kaifusi6.jpg" alt="开福寺6" onerror="this.src='https://picsum.photos/id/1036/800/450'">
+                    <img class="carousel-slide" loading="lazy" src="kaifusi/kaifusi7.jpg" alt="开福寺7" onerror="this.src='https://picsum.photos/id/1036/800/450'">
+                    <img class="carousel-slide" loading="lazy" src="kaifusi/kaifusi8.jpg" alt="开福寺8" onerror="this.src='https://picsum.photos/id/1036/800/450'">
+                </div>
+                <button class="carousel-btn prev" aria-label="上一张">❮</button>
+                <button class="carousel-btn next" aria-label="下一张">❯</button>
+                <div class="carousel-dots"></div>
+            </div>
+        </section>
+
+        <section class="location-card museum-card">
+            <h2 class="location-title">李自健美术馆</h2>
+            <p class="location-desc">
+                洋湖湿地旁的艺术殿堂。巨大的“和”字雕塑静静矗立，在这里，光影与色彩交织，每一帧画面都诉说着对人性的思考与对和平的祈愿。</p>
+            <div class="carousel" data-carousel>
+                <div class="carousel-track">
+                    <img class="carousel-slide" loading="lazy" src="lizijianmeishuguan/lizijianmeishuguan1.jpg" alt="李自健美术馆1" onerror="this.src='https://picsum.photos/id/1036/800/450'">
+                    <img class="carousel-slide" loading="lazy" src="lizijianmeishuguan/lizijianmeishuguan2.jpg" alt="李自健美术馆2" onerror="this.src='https://picsum.photos/id/1036/800/450'">
+                    <img class="carousel-slide" loading="lazy" src="lizijianmeishuguan/lizijianmeishuguan3.jpg" alt="李自健美术馆3" onerror="this.src='https://picsum.photos/id/1036/800/450'">
+                    <img class="carousel-slide" loading="lazy" src="lizijianmeishuguan/lizijianmeishuguan4.jpg" alt="李自健美术馆4" onerror="this.src='https://picsum.photos/id/1036/800/450'">
+                    <img class="carousel-slide" loading="lazy" src="lizijianmeishuguan/lizijianmeishuguan5.jpg" alt="李自健美术馆5" onerror="this.src='https://picsum.photos/id/1036/800/450'">
+                    <img class="carousel-slide" loading="lazy" src="lizijianmeishuguan/lizijianmeishuguan6.jpg" alt="李自健美术馆6" onerror="this.src='https://picsum.photos/id/1036/800/450'">
+                    <img class="carousel-slide" loading="lazy" src="lizijianmeishuguan/lizijianmeishuguan7.jpg" alt="李自健美术馆7" onerror="this.src='https://picsum.photos/id/1036/800/450'">
+                    <img class="carousel-slide" loading="lazy" src="lizijianmeishuguan/lizijianmeishuguan8.jpg" alt="李自健美术馆8" onerror="this.src='https://picsum.photos/id/1036/800/450'">
+                </div>
+                <button class="carousel-btn prev" aria-label="上一张">❮</button>
+                <button class="carousel-btn next" aria-label="下一张">❯</button>
+                <div class="carousel-dots"></div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="page-footer">
+        <p>长沙回忆录 · 留存美好旅途记忆</p>
+    </footer>
+
+    <!-- 大图预览容器 -->
+    <div class="img-preview">
+        <span class="close">×</span>
+        <img src="" alt="大图预览">
+    </div>
+
+<script>
+// 大图预览逻辑
+const previewBox = document.querySelector('.img-preview');
+const previewImg = previewBox.querySelector('img');
+const closeBtn = previewBox.querySelector('.close');
+
+document.querySelectorAll('.carousel-slide').forEach(img=>{
+    img.addEventListener('click', ()=>{
+        previewImg.src = img.src;
+        previewBox.classList.add('show');
+    })
+})
+closeBtn.addEventListener('click', ()=> previewBox.classList.remove('show'));
+previewBox.addEventListener('click', (e)=>{
+    if(e.target === previewBox) previewBox.classList.remove('show');
+})
+
+// 轮播类，支持页面多个轮播实例、自动播放、触摸滑动
+class Carousel {
+    constructor(container) {
+        this.container = container;
+        this.track = container.querySelector('.carousel-track');
+        this.slides = container.querySelectorAll('.carousel-slide');
+        this.prevBtn = container.querySelector('.prev');
+        this.nextBtn = container.querySelector('.next');
+        this.dotsWrap = container.querySelector('.carousel-dots');
+
+        this.slideCount = this.slides.length;
+        this.currentIndex = 0;
+        this.timer = null;
+
+        // 触摸变量
+        this.startX = 0;
+        this.moveX = 0;
+
+        // 生成圆点
+        this.createDots();
+        // 绑定按钮事件
+        this.bindEvents();
+        // 初始化视图
+        this.updateView();
+        // 启动自动轮播
+        this.startAutoPlay();
+        // 鼠标悬停暂停
+        this.container.addEventListener('mouseenter', ()=> this.stopAutoPlay());
+        this.container.addEventListener('mouseleave', ()=> this.startAutoPlay());
+        // 触摸滑动
+        this.bindTouch();
+    }
+
+    createDots() {
+        for(let i = 0; i < this.slideCount; i++){
+            const dot = document.createElement('button');
+            dot.className = 'carousel-dot';
+            dot.dataset.index = i;
+            this.dotsWrap.appendChild(dot);
+        }
+        this.dots = this.dotsWrap.querySelectorAll('.carousel-dot');
+    }
+
+    bindEvents() {
+        // 上一张
+        this.prevBtn.addEventListener('click', () => {
+            this.currentIndex = (this.currentIndex - 1 + this.slideCount) % this.slideCount;
+            this.updateView();
+        });
+        // 下一张
+        this.nextBtn.addEventListener('click', () => {
+            this.currentIndex = (this.currentIndex + 1) % this.slideCount;
+            this.updateView();
+        });
+        // 点击圆点跳转
+        this.dots.forEach(dot => {
+            dot.addEventListener('click', (e)=>{
+                this.currentIndex = Number(e.target.dataset.index);
+                this.updateView();
+            })
+        })
+    }
+
+    bindTouch(){
+        this.container.addEventListener('touchstart', (e)=>{
+            this.startX = e.touches[0].clientX;
+            this.stopAutoPlay();
+        }, {passive:true})
+        this.container.addEventListener('touchmove', (e)=>{
+            this.moveX = e.touches[0].clientX;
+        }, {passive:true})
+        this.container.addEventListener('touchend', ()=>{
+            const diff = this.moveX - this.startX;
+            if(diff > 60){
+                // 右滑，上一张
+                this.currentIndex = (this.currentIndex - 1 + this.slideCount) % this.slideCount;
+                this.updateView();
+            }else if(diff < -60){
+                // 左滑，下一张
+                this.currentIndex = (this.currentIndex + 1) % this.slideCount;
+                this.updateView();
+            }
+            this.startAutoPlay();
+        }, {passive:true})
+    }
+
+    updateView() {
+        // 移动轨道
+        this.track.style.transform = `translateX(-${this.currentIndex * 100}%)`;
+        // 更新圆点激活状态
+        this.dots.forEach((dot, idx)=>{
+            dot.classList.toggle('active', idx === this.currentIndex);
+        })
+    }
+
+    startAutoPlay(){
+        this.stopAutoPlay();
+        this.timer = setInterval(()=>{
+            this.currentIndex = (this.currentIndex + 1) % this.slideCount;
+            this.updateView();
+        },4000)
+    }
+    stopAutoPlay(){
+        clearInterval(this.timer);
+    }
+}
+
+// 页面加载完成后初始化所有轮播
+document.addEventListener('DOMContentLoaded', ()=>{
+    const allCarousels = document.querySelectorAll('[data-carousel]');
+    allCarousels.forEach(carouselEl => new Carousel(carouselEl));
+})
+</script>
+
+</body>
+</html>
